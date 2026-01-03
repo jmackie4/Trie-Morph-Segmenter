@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version","dependencies"]
+name = "Trie-Morph-Segmenter"
+authors = [{name = 'Justin Mackie',email = "jmackie4@asu.edu"}]
+description = "A package that allows users to create morpheme segmentations for words using a trie"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE*"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools_scm]
+

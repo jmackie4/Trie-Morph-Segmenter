@@ -1,9 +1,10 @@
-import re
+import re,nltk
 from sklearn.base import BaseEstimator, TransformerMixin
 from nltk.corpus.reader import PlaintextCorpusReader
 from nltk.lm.preprocessing import flatten
-from nltk import RegexpTokenizer
 from typing import List
+nltk.download('punkt')
+nltk.download('punkt_tab')
 
 class CorpusTokenizer(BaseEstimator, TransformerMixin):
     def __init__(self,pattern:str=None):
@@ -11,7 +12,7 @@ class CorpusTokenizer(BaseEstimator, TransformerMixin):
 
     def fit(self,X,y=None):
         if self._pattern is not None:
-            self.tokenizer_ = RegexpTokenizer(self._pattern)
+            self.tokenizer_ = nltk.RegexpTokenizer(self._pattern)
         else:
             pass
         return self

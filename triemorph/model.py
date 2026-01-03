@@ -3,7 +3,7 @@ from typing import List
 from nltk.util import flatten
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
-import tokenization_pipeline as tp
+import triemorph.tokenization_pipeline as tp
 
 class TrieNode:
     def __init__(self,key,value=None,parent=None):
@@ -24,7 +24,7 @@ class Trie:
             if char not in node.children:
                 node.children[char] = TrieNode(char,parent=node)
             print(node.children[char].key)
-            self._add_word_recursively(node.children[idx],word,i+1)
+            self._add_word_recursively(node.children[char],word,i+1)
 
         else:
             node.is_end_of_word = True
