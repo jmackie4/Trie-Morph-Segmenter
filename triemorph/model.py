@@ -4,6 +4,7 @@ from nltk.util import flatten
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 import triemorph.tokenization_pipeline as tp
+from collections import Counter
 
 class TrieNode:
     def __init__(self,key,value=None,parent=None):
@@ -15,7 +16,7 @@ class TrieNode:
 
 
 class Trie:
-    def __init__(self,vocabulary:List[str]):
+    def __init__(self):
         self.root = TrieNode(' ')
 
     def _add_word_recursively(self,node,word,i):
@@ -50,6 +51,49 @@ class Trie:
         else:
             print(f'{word} not found in the trie!!')
 
+class Entropy_Node(TrieNode):
+    def __init__(self,key,value=None,parent=None):
+        super().__init__(key,value,parent)
+        self.entropy = None
+        self.child_counts = Counter()
+
+
+class Entropy_Trie(Trie):
+    def __init__(self):
+        super().__init__()
+        self.root = Entropy_Node(' ')
+
+    def _add_word_recursively(self,node,word,i):
+        if i < len(word):
+            char = word[i]
+            if char not in node.children:
+                node.children[char] = Entropy_Node(char,parent=node)
+                node.child_counts[char] += 1
+            print(node.children[char].key)
+            self._add_word_recursively(node.children[char],word,i+1)
+
+        else:
+            node.is_end_of_word = True
+
+    def add_word(self,word):
+        self._add_word_recursively(self.root,word,0)
+
+    def calculate_entropy_recursively(self, node):
+        if len(node.children) == 0:
+            return 0
+        else:
+            initial_series = pd.Series(node.child_counts.values())
+            probability_vector = initial_series.div(initial_series.sum())
+            entropy = -np.dot(probability_vector, np.log2(probability_vector))
+            node.entropy = entropy
+            for child in node.children.values():
+                self.calculate_entropy_recursively(child)
+
+    def fill_entropies(self):
+        self.calculate_entropy_recursively(self.root)
+
+
+
 
 class Trie_Model(BaseEstimator,TransformerMixin):
     def __init__(self):
@@ -66,6 +110,7 @@ class Trie_Model(BaseEstimator,TransformerMixin):
 
 
 def process_corpus(func):
+#This is a decorator for the create trie function that creates a trie when given a folder of texts
     def wrapper():
         cwd = os.getcwd()
         while True:
