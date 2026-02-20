@@ -1,10 +1,11 @@
 import os,re
 from typing import List
-from nltk.util import flatten
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 import triemorph.tokenization_pipeline as tp
 from collections import Counter
+import pandas as pd
+import numpy as np
 
 class TrieNode:
     def __init__(self,key,value=None,parent=None):
@@ -24,7 +25,6 @@ class Trie:
             char = word[i]
             if char not in node.children:
                 node.children[char] = TrieNode(char,parent=node)
-            print(node.children[char].key)
             self._add_word_recursively(node.children[char],word,i+1)
 
         else:
@@ -69,7 +69,6 @@ class Entropy_Trie(Trie):
             if char not in node.children:
                 node.children[char] = Entropy_Node(char,parent=node)
                 node.child_counts[char] += 1
-            print(node.children[char].key)
             self._add_word_recursively(node.children[char],word,i+1)
 
         else:
@@ -134,7 +133,4 @@ def create_trie(path:str,pattern:str):
                       ('trie',Trie_Model())]
     pipeline = Pipeline(pipeline_steps)
     return pipeline.fit_transform(path)
-
-
-
 
