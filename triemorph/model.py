@@ -3,7 +3,7 @@ from typing import List
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 import triemorph.tokenization_pipeline as tp
-from collections import Counter
+from collections import Counter, defaultdict
 import pandas as pd
 import numpy as np
 
@@ -19,15 +19,18 @@ class TrieNode:
 class Trie:
     def __init__(self):
         self.root = TrieNode(' ')
+        self.path_counts = defaultdict(Counter)
 
     def _add_word_recursively(self,node,word,i):
         if i < len(word):
             char = word[i]
+            if i > 0:
+                self.path_counts[i][(word[0],char,word[1:i])] += 1
             if char not in node.children:
                 node.children[char] = TrieNode(char,parent=node)
             self._add_word_recursively(node.children[char],word,i+1)
-
         else:
+            self.path_counts[i][(word[0],'$',word[1:])] += 1
             node.is_end_of_word = True
 
     def add_word(self,word):

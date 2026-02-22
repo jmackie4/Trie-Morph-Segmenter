@@ -21,6 +21,10 @@ class TrieModelTest(unittest.TestCase):
         with self.assertRaises(KeyError):
             trie._search_recursively(trie.root,'bat',0,len('bat')+1)
 
+    def test_trie_path_count_add_on(self):
+        trie = model.Trie()
+        trie.add_word(self.token)
+        self.assertTrue(trie.path_counts != {})
 
 
 class EntropyTrieTest(unittest.TestCase):
