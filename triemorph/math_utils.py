@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from typing import Dict
 
 def create_joint_probability_df(input:pd.DataFrame):
     return input.div(input.sum().sum())
@@ -31,3 +32,39 @@ def get_mutual_information(input:pd.DataFrame):
     marginal_entropy = get_entropy_for_variable(input,marginal='x')
     conditional_entropy = get_conditional_entropy(input,conditional='y')
     return marginal_entropy - conditional_entropy
+
+
+def parse_tuple_keys(input:Dict[tuple,int],n_keys:int=3):
+    output_list = []
+    for i in range(n_keys):
+        output_list.append(sorted(list(set(key[i] for key in input.keys()))))
+    return output_list
+
+def map_int_to_index_items(input):
+    output_list = [{sub_item:i for i,sub_item in enumerate(sub_item)} for sub_item in input]
+    return output_list
+
+def create_empty_frequency_array(input):
+    shape = [len(item) for item in input]
+    return np.zeros(shape)
+
+def create_xyz_array(input:Dict[tuple,int],n_keys:int=3):
+    xyz_indexes = parse_tuple_keys(input,n_keys=n_keys)
+    frequency_array = create_empty_frequency_array(xyz_indexes)
+    xmaps,ymaps,zmaps = map_int_to_index_items(xyz_indexes)
+
+    for (x,y,z),i in input.items():
+        frequency_array[xmaps[x],ymaps[y],zmaps[z]] = i
+
+    return frequency_array
+
+def create_pxyz_array(input:np.ndarray):
+    return input / np.sum(input)
+
+def get_conditional_probability(input:np.ndarray,axis:int):
+    return input / np.sum(input,axis=axis,keepdims=True)
+
+
+
+
+

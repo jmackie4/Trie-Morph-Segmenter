@@ -90,6 +90,7 @@ class Entropy_Trie(Trie):
             node.entropy = entropy
             for child in node.children.values():
                 self.calculate_entropy_recursively(child)
+            return None
 
     def fill_entropies(self):
         self.calculate_entropy_recursively(self.root)
@@ -105,7 +106,7 @@ class Trie_Model(BaseEstimator,TransformerMixin):
         return self
 
     def transform(self,X:List[str],y=None):
-        trie = Trie(X)
+        trie = Trie()
         for word in set(X):
             trie.add_word(word)
         return trie
