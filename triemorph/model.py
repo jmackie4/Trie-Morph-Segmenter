@@ -6,6 +6,48 @@ import triemorph.tokenization_pipeline as tp
 from collections import Counter, defaultdict
 import pandas as pd
 import numpy as np
+import triemorph.math_utils as mutils
+
+def process_corpus(func):
+#This is a decorator for the create trie function that creates a trie when given a folder of texts
+    def wrapper():
+        cwd = os.getcwd()
+        while True:
+            corpus_name = input(f'Please put in the path from {cwd} to corpus:\n')
+            if os.path.exists(os.path.join(cwd, corpus_name)):
+                break
+            else:
+                print('That\'s a corpus path that does not exist! Try again!')
+
+        tokenizer_pattern = input('Please provide a tokenizer pattern for your corpus:\n')
+        tokenizer_pattern = re.compile(tokenizer_pattern)
+        trie = func(os.path.join(cwd, corpus_name), tokenizer_pattern)
+        print('You now have fully loaded the corpus into a trie, have fun!!!')
+        return trie
+    return wrapper
+
+
+def create_trie(path:str,pattern:str):
+    assert os.path.exists(path), 'You can only create a trie using a legitimate path to a corpus!'
+    pipeline_steps = [('tokenize',tp.CorpusTokenizer(pattern=pattern)),
+                      ('trie',Trie_Model())]
+    pipeline = Pipeline(pipeline_steps)
+    return pipeline.fit_transform(path)
+
+
+class Trie_Model(BaseEstimator,TransformerMixin):
+    def __init__(self):
+        pass
+
+    def fit(self,X,y=None):
+        return self
+
+    def transform(self,X:List[str],y=None):
+        trie = Trie()
+        for word in set(X):
+            trie.add_word(word)
+        return trie
+
 
 class TrieNode:
     def __init__(self,key,value=None,parent=None):
@@ -95,46 +137,15 @@ class Entropy_Trie(Trie):
     def fill_entropies(self):
         self.calculate_entropy_recursively(self.root)
 
+class WordSegmenter:
+    def __init__(self,wordlist):
+        frequency_dict = load_words(wordlist)
+        frequency_arrays = {key:mutils.create_xyz_array(value) for key,value in frequency_dict.items()}
+        self.model = {key:mutils.create_pxyz_array(value) for key,value in frequency_arrays.items()}
 
 
-
-class Trie_Model(BaseEstimator,TransformerMixin):
-    def __init__(self):
-        pass
-
-    def fit(self,X,y=None):
-        return self
-
-    def transform(self,X:List[str],y=None):
-        trie = Trie()
-        for word in set(X):
-            trie.add_word(word)
-        return trie
-
-
-def process_corpus(func):
-#This is a decorator for the create trie function that creates a trie when given a folder of texts
-    def wrapper():
-        cwd = os.getcwd()
-        while True:
-            corpus_name = input(f'Please put in the path from {cwd} to corpus:\n')
-            if os.path.exists(os.path.join(cwd, corpus_name)):
-                break
-            else:
-                print('That\'s a corpus path that does not exist! Try again!')
-
-        tokenizer_pattern = input('Please provide a tokenizer pattern for your corpus:\n')
-        tokenizer_pattern = re.compile(tokenizer_pattern)
-        trie = func(os.path.join(cwd, corpus_name), tokenizer_pattern)
-        print('You now have fully loaded the corpus into a trie, have fun!!!')
-        return trie
-    return wrapper
-
-
-def create_trie(path:str,pattern:str):
-    assert os.path.exists(path), 'You can only create a trie using a legitimate path to a corpus!'
-    pipeline_steps = [('tokenize',tp.CorpusTokenizer(pattern=pattern)),
-                      ('trie',Trie_Model())]
-    pipeline = Pipeline(pipeline_steps)
-    return pipeline.fit_transform(path)
-
+def load_words(word_list:List[str]):
+    trie = Trie()
+    for word in word_list:
+        trie.add_word(word)
+    return trie.path_counts

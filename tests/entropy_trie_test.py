@@ -1,7 +1,8 @@
 import unittest
 import triemorph.model as model
-import pandas as pd
-
+from sklearn.utils.validation import check_is_fitted
+from sklearn.exceptions import NotFittedError
+import numpy as np
 
 """ DO NOT RUN THE TEST FILE DIRECTLY IT WILL ONLY REALLY WORK IF YOU RUN IT FROM THE PROJECT ROOT 
 DIRECTORY"""
@@ -39,4 +40,18 @@ class EntropyTrieTest(unittest.TestCase):
         self.assertNotEqual(self.trie.root.entropy,0)
 
         self.assertNotEqual(self.trie.root.children['c'].entropy,0)
+
+class WordSegmenterTest(unittest.TestCase):
+    def setUp(self):
+        self.word_list = ['cheese','weenie','wonderland','carlton','wanderlust']
+
+    def test_load_words(self):
+        output = model.load_words(self.word_list)
+        self.assertIsInstance(output,dict)
+
+
+
+
+
+
 

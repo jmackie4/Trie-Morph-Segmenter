@@ -59,7 +59,7 @@ def create_xyz_array(input:Dict[tuple,int],n_keys:int=3):
     return frequency_array
 
 def create_pxyz_array(input:np.ndarray):
-    return input / np.sum(input)
+    return (input + 1) / (np.sum(input) + 1 * input.size)
 
 def get_conditional_probability(input:np.ndarray,axis:int):
     return input / np.sum(input,axis=axis,keepdims=True)
