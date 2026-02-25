@@ -44,10 +44,28 @@ class EntropyTrieTest(unittest.TestCase):
 class WordSegmenterTest(unittest.TestCase):
     def setUp(self):
         self.word_list = ['cheese','weenie','wonderland','carlton','wanderlust']
+        self.test_input = {1:[np.random.randint(0,10,size=(3,3,3)),self.word_list[0:3]],
+                           2:[np.random.randint(0,10,size=(3,3,3)),self.word_list[1:4]],
+                           3:[np.random.randint(0,10,size=(3,3,3)),self.word_list[0:3]],
+                           }
 
     def test_load_words(self):
         output = model.load_words(self.word_list)
         self.assertIsInstance(output,dict)
+
+    def test_extract_array_and_mappings(self):
+        output = model.extract_array_and_mappings(self.test_input,2)
+        self.assertIsInstance(output,tuple)
+        self.assertTrue(len(output) == 4)
+
+
+
+
+
+
+
+
+
 
 
 

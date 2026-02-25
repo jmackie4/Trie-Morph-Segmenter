@@ -7,6 +7,7 @@ from collections import Counter, defaultdict
 import pandas as pd
 import numpy as np
 import triemorph.math_utils as mutils
+from typing import Dict,Tuple,List
 
 def process_corpus(func):
 #This is a decorator for the create trie function that creates a trie when given a folder of texts
@@ -137,11 +138,6 @@ class Entropy_Trie(Trie):
     def fill_entropies(self):
         self.calculate_entropy_recursively(self.root)
 
-class WordSegmenter:
-    def __init__(self,wordlist):
-        frequency_dict = load_words(wordlist)
-        frequency_arrays = {key:mutils.create_xyz_array(value) for key,value in frequency_dict.items()}
-        self.model = {key:mutils.create_pxyz_array(value) for key,value in frequency_arrays.items()}
 
 
 def load_words(word_list:List[str]):
@@ -149,3 +145,10 @@ def load_words(word_list:List[str]):
     for word in word_list:
         trie.add_word(word)
     return trie.path_counts
+
+
+def extract_array_and_mappings(input_dict:Dict[int,List],path_len:int):
+    array = input_dict[path_len][0]
+    x_maps,y_maps,z_maps = input_dict[path_len][1]
+    return array,x_maps,y_maps,z_maps
+

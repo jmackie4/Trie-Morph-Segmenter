@@ -73,9 +73,11 @@ class Three_Variable_Frequency_Table_Test(unittest.TestCase):
 
     def test_create_xyz_array(self):
         output = mutils.create_xyz_array(self.test_initial_dict)
-        self.assertIsInstance(output,np.ndarray)
-        self.assertTrue(all(dim > 0 for dim in output.shape))
-        self.assertTrue(output.ndim == 3)
+        self.assertIsInstance(output,tuple)
+        self.assertEqual(len(output),2)
+        self.assertIsInstance(output[0],np.ndarray)
+        self.assertTrue(all(dim > 0 for dim in output[0].shape))
+        self.assertTrue(output[0].ndim == 3)
 
 class CMI_Tests(unittest.TestCase):
     def setUp(self):
@@ -93,3 +95,20 @@ class CMI_Tests(unittest.TestCase):
         self.assertTrue(np.allclose(np.sum(output2,axis=1),1))
 
 
+class Three_Variable_Array_Tests(unittest.TestCase):
+    def setUp(self):
+        self.word_list = ['cheese','weenie','wonderland','carlton','wanderlust']
+        self.test_input = {1: [np.random.randint(0, 10, size=(3, 3, 3)), self.word_list[0:3]],
+                           2: [np.random.randint(0, 10, size=(3, 3, 3)), self.word_list[1:4]],
+                           3: [np.random.randint(0, 10, size=(3, 3, 3)), self.word_list[0:3]],
+                           }
+
+    def test_extract_probabilities_for_specific_variables(self):
+        output = mutils.extract_probabilities_for_specific_variables(self.test_input[1][0], [0, 1, 2])
+        self.assertIsInstance(output, tuple)
+        self.assertTrue(len(output) == 2)
+
+
+    def test_get_surprisal_for_conditional_probability(self):
+        output = mutils.get_surprisal_for_conditional_probability((0.40, 0.83))
+        self.assertIsInstance(output, float)

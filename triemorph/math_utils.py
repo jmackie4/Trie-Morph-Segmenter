@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from typing import Dict
+from typing import Dict,Tuple,List
 
 def create_joint_probability_df(input:pd.DataFrame):
     return input.div(input.sum().sum())
@@ -56,7 +56,7 @@ def create_xyz_array(input:Dict[tuple,int],n_keys:int=3):
     for (x,y,z),i in input.items():
         frequency_array[xmaps[x],ymaps[y],zmaps[z]] = i
 
-    return frequency_array
+    return frequency_array,(xmaps,ymaps,zmaps)
 
 def create_pxyz_array(input:np.ndarray):
     return (input + 1) / (np.sum(input) + 1 * input.size)
@@ -65,6 +65,13 @@ def get_conditional_probability(input:np.ndarray,axis:int):
     return input / np.sum(input,axis=axis,keepdims=True)
 
 
+def extract_probabilities_for_specific_variables(input:np.ndarray,indices_for_marginals:List[int]):
+    z_slice = input[:,:,indices_for_marginals[2]]
+    pz = z_slice.sum(axis=(0,1))
+    pxyz = input[indices_for_marginals[0],indices_for_marginals[1],indices_for_marginals[2]]
+    return pxyz,pz
 
+def get_surprisal_for_conditional_probability(input:Tuple[int]):
+    return -np.log2(input[0] / input[1])
 
 
