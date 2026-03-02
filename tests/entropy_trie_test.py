@@ -49,6 +49,7 @@ class WordSegmenterTest(unittest.TestCase):
                            3:[np.random.randint(0,10,size=(3,3,3)),self.word_list[0:3]],
                            }
 
+
     def test_load_words(self):
         output = model.load_words(self.word_list)
         self.assertIsInstance(output,dict)
@@ -59,8 +60,20 @@ class WordSegmenterTest(unittest.TestCase):
         self.assertTrue(len(output) == 4)
 
 
+    def test_get_surprisal_for_single_point(self):
+        probability_array = np.random.rand(3, 3, 3)
+        probability_array = probability_array / probability_array.sum()
+        x_maps = {'a': 0, 'w': 1, 'l': 2}
+        y_maps = {'t': 0, 'b': 1, 'r': 2}
+        z_maps = {'ub': 0, 'os': 1, 'we': 2}
+        input_array_and_mappings = (probability_array, x_maps, y_maps, z_maps)
+        inputs_for_function = ('a', 't', 'ub')
 
+        output = model.get_surprisal_for_single_point(input_array_and_mappings, inputs_for_function)
 
+        self.assertIsInstance(output,dict)
+        self.assertTrue(output != {})
+        self.assertTrue(all(isinstance(value,float) for value in output.values()))
 
 
 

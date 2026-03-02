@@ -3,8 +3,6 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from nltk.corpus.reader import PlaintextCorpusReader
 from nltk.lm.preprocessing import flatten
 from typing import List
-nltk.download('punkt')
-nltk.download('punkt_tab')
 
 class CorpusTokenizer(BaseEstimator, TransformerMixin):
     def __init__(self,pattern:str=None):

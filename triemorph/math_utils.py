@@ -41,7 +41,7 @@ def parse_tuple_keys(input:Dict[tuple,int],n_keys:int=3):
     return output_list
 
 def map_int_to_index_items(input):
-    output_list = [{sub_item:i for i,sub_item in enumerate(sub_item)} for sub_item in input]
+    output_list = [{nested_sublist_item:i for i,nested_sublist_item in enumerate(sub_item)} for sub_item in input]
     return output_list
 
 def create_empty_frequency_array(input):
@@ -73,5 +73,7 @@ def extract_probabilities_for_specific_variables(input:np.ndarray,indices_for_ma
 
 def get_surprisal_for_conditional_probability(input:Tuple[int]):
     return -np.log2(input[0] / input[1])
+
+
 
 

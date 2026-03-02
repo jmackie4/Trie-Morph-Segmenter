@@ -152,3 +152,31 @@ def extract_array_and_mappings(input_dict:Dict[int,List],path_len:int):
     x_maps,y_maps,z_maps = input_dict[path_len][1]
     return array,x_maps,y_maps,z_maps
 
+def get_surprisal_for_single_point(input_array_and_mappings,inputs):
+    x,y,z = inputs
+    x_maps,y_maps,z_maps = input_array_and_mappings[1:]
+    array = input_array_and_mappings[0]
+    indices_to_use = [x_maps[x],y_maps[y],z_maps[z]]
+    output = {}
+
+    main_probabilities = mutils.extract_probabilities_for_specific_variables(array,indices_to_use)
+    output[y] = mutils.get_surprisal_for_conditional_probability(main_probabilities)
+    return output
+
+def create_root_conditional_vector(path_counts,input:str):
+    j = 1
+    output = {}
+    while j < len(input):
+        x = input[0]
+        y = input[j]
+        z = input[1:j]
+        frequency_array_and_mappings = mutils.create_xyz_array(path_counts[j])
+        probability_array = mutils.pxyz_array(frequency_array_and_mappings[0])
+        frequency_array_and_mappings[0] = probability_array
+        output + get_surprisal_for_single_point(frequency_array_and_mappings,[x,y,z])
+        j += 1
+    return output
+
+
+
+
