@@ -1,7 +1,5 @@
 import unittest
 import triemorph.model as model
-from sklearn.utils.validation import check_is_fitted
-from sklearn.exceptions import NotFittedError
 import numpy as np
 
 """ DO NOT RUN THE TEST FILE DIRECTLY IT WILL ONLY REALLY WORK IF YOU RUN IT FROM THE PROJECT ROOT 

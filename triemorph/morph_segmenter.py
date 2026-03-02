@@ -1,13 +1,7 @@
-import os,re
-from typing import List
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.pipeline import Pipeline
 import triemorph.model as model
-from collections import Counter, defaultdict
 import pandas as pd
 import numpy as np
 import triemorph.math_utils as mutils
-from typing import Dict,Tuple,List
 
 class Segmenter:
     def __init__(self,wordlist):

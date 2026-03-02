@@ -1,9 +1,6 @@
 import unittest
 import triemorph.morph_segmenter as morph
-import numpy as np
-import pandas as pd
-import triemorph.model as model
-from collections import defaultdict,Counter
+from collections import defaultdict
 
 class ArrayMappingMakerTest(unittest.TestCase):
     def setUp(self):

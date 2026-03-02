@@ -18,7 +18,3 @@ class TestTokenization(unittest.TestCase):
         self.assertIsInstance(create_trie(test_path,test_pattern,),Trie)
 
 
-
-if __name__ == '__main__':
-    unittest.main()
-

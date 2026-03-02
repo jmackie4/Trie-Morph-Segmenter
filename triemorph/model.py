@@ -1,5 +1,4 @@
 import os,re
-from typing import List
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 import triemorph.tokenization_pipeline as tp
